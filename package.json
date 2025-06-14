@@ -1,0 +1,16 @@
+{
+  "name": "gamble-bot",
+  "version": "1.0.0",
+  "description": "discord bot for gambling",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "test"
+  },
+  "author": "Ashton",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^14.19.3",
+    "dotenv": "^16.5.0"
+  }
+}
