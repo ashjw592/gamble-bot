@@ -1,5 +1,6 @@
 const { SlashCommandBuilder } = require('discord.js');
 const { slotsCommand } = require('../src/slots.js')
+const wait = require('node:timers/promises').setTimeout;
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -12,6 +13,8 @@ module.exports = {
 				.setRequired(true)),
 	async execute(interaction) {
 		await interaction.reply(slotsCommand(interaction.user.id, interaction.options.getNumber('bet')));
+		await wait(5000)
+		await interaction.deleteReply()
 
 	},
 };
