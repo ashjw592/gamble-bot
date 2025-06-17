@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
+    "deploy": "node deploy-commands.js",
     "test": "test"
   },
   "author": "Ashton",
