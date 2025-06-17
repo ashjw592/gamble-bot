@@ -1,6 +1,5 @@
-
-// index.js
 require('dotenv').config();
+const { createDeck } = require('./src/blackjack.js')
 const fs = require('fs');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
