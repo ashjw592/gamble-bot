@@ -11,7 +11,8 @@ module.exports = {
 				ephemeral: true
 			});
 		}
-		await interaction.update(buildEmbed(interaction, slotsCommand(interaction.user.id, bet)))
-
+		else {
+			await interaction.update(buildEmbed(interaction, slotsCommand(interaction.user.id, bet)))
+		}
 	}
 }
