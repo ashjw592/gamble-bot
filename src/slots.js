@@ -9,8 +9,7 @@ function slotsCommand(id, amount) {
     return 'insufficient funds'
   }
   let result = slotsResult();
-  let returnString = result[0]
-  let multiplier = result[1]
+  let multiplier = result.multiplier
   if (multiplier === 0) {
     changeBalance(id, -amount);
     bal -= amount
@@ -21,7 +20,17 @@ function slotsCommand(id, amount) {
   }
 
 
-  return returnString + `\nNew Balance: ${bal}`;
+  let returnObject = {
+    bet: amount,
+    multiplier: multiplier,
+    winnings: multiplier * amount,
+    balance: bal,
+    id: id,
+    emojiArr: result.emojiArr,
+    resultString: result.resultString,
+    resultBit: result.resultBit
+  }
+  return returnObject
 }
 
 function slotsResult() {
@@ -33,7 +42,7 @@ function slotsResult() {
   }
   let result = slotsLogic(emojiArr);
   if (result === 1) {
-    returnString = `+----------+\n| ${emojiArr[0]}${emojiArr[1]}${emojiArr[2]} |\n+----------+\nYou Win!`
+    returnString = `You Win!`
     if (emojiArr[0] === '🍒') {
       multiplier = 15
     }
@@ -45,11 +54,15 @@ function slotsResult() {
     }
   }
   else {
-    returnString = `${emojiArr}\nYou Lost!`
-    returnString = `+----------+\n| ${emojiArr[0]}${emojiArr[1]}${emojiArr[2]} |\n+----------+\nYou Lost!`
+    returnString = `You Lost!`
     multiplier = 0;
   }
-  return [returnString, multiplier];
+  return {
+    multiplier: multiplier,
+    emojiArr: emojiArr,
+    resultString: returnString,
+    resultBit: result
+  };
 }
 
 function chooseEmoji() {

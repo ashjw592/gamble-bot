@@ -1,5 +1,4 @@
 require('dotenv').config();
-const { createDeck } = require('./src/blackjack.js')
 const fs = require('fs');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 
@@ -33,8 +32,8 @@ client.on('interactionCreate', async interaction => {
 		await interaction.reply({ content: '❌ There was an error!', ephemeral: true });
 	}
 });
-const path = require('path');
 const buttons = new Map();
+const modals = new Map();
 
 // Load buttons dynamically
 const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
@@ -43,28 +42,53 @@ for (const file of buttonFiles) {
 	buttons.set(button.customId, button);
 }
 
+const modalFiles = fs.readdirSync('./modals').filter(file => file.endsWith('.js'));
+for (const file of modalFiles) {
+	const modal = require(`./modals/${file}`);
+	modals.set(modal.customId, modal);
+}
 client.on('interactionCreate', async interaction => {
-	if (!interaction.isButton()) return;
+	if (interaction.isButton()) {
 
-	// Try to match a button module by regex
-	for (const button of buttons.values()) {
-		const match =
-			typeof button.customId === 'string'
-				? button.customId === interaction.customId
-				: button.customId instanceof RegExp && button.customId.test(interaction.customId);
+		// Try to match a button module by regex
+		for (const button of buttons.values()) {
+			const match =
+				typeof button.customId === 'string'
+					? button.customId === interaction.customId
+					: button.customId instanceof RegExp && button.customId.test(interaction.customId);
 
-		if (match) {
-			try {
-				await button.execute(interaction);
-			} catch (err) {
-				console.error(err);
-				await interaction.reply({
-					content: 'There was an error with that button.',
-					ephemeral: true
-				});
+			if (match) {
+				try {
+					await button.execute(interaction);
+				} catch (err) {
+					console.error(err);
+					await interaction.reply({
+						content: 'There was an error with that button.',
+						ephemeral: true
+					});
+				}
+				break;
 			}
-			break;
 		}
+	}
+	if (interaction.isModalSubmit()) {
+		for (const modal of modals.values()) {
+			if (interaction.customId === modal.customId) {
+				try {
+					await modal.execute(interaction);
+				}
+				catch (err) {
+					console.error(err);
+					await interaction.reply({
+						content: 'There was an error with that interaction',
+						ephemeral: true
+					})
+				}
+				break;
+			}
+		}
+
+
 	}
 });
 
